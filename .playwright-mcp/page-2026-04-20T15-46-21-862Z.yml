@@ -1,0 +1,47 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "Styli" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: Styli
+      - navigation [ref=e9]:
+        - link "Discover" [ref=e10] [cursor=pointer]:
+          - /url: /recommendations
+        - link "Wardrobe" [ref=e11] [cursor=pointer]:
+          - /url: /wardrobe
+        - link "Wishlist" [ref=e12] [cursor=pointer]:
+          - /url: /wishlist
+      - generic [ref=e13]:
+        - link "Re-scan" [ref=e14] [cursor=pointer]:
+          - /url: /scan
+        - link "Sign in" [ref=e15] [cursor=pointer]:
+          - /url: /auth
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - link [ref=e19] [cursor=pointer]:
+          - /url: /wardrobe
+          - img [ref=e20]
+        - generic [ref=e22]:
+          - heading "Add to wardrobe" [level=1] [ref=e23]
+          - paragraph [ref=e24]: Paste a link, upload a photo, or enter details manually
+      - generic [ref=e25]:
+        - button "Paste URL" [ref=e26] [cursor=pointer]:
+          - img [ref=e27]
+          - generic [ref=e30]: Paste URL
+        - button "Upload photo" [ref=e31] [cursor=pointer]:
+          - img [ref=e32]
+          - generic [ref=e36]: Upload photo
+        - button "Manual entry" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+          - generic [ref=e40]: Manual entry
+      - generic [ref=e42]:
+        - text: Product URL
+        - generic [ref=e43]:
+          - textbox "https://www.nordstrom.com/product/..." [ref=e44]
+          - button "Fetch" [disabled] [ref=e45]
+        - paragraph [ref=e46]: Works with Nordstrom, ASOS, Zara, H&M, Net-a-Porter, and 200+ more stores.
+  - button "Open Next.js Dev Tools" [ref=e52] [cursor=pointer]:
+    - img [ref=e53]
+  - alert [ref=e56]

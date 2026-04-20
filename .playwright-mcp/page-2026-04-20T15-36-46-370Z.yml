@@ -1,0 +1,223 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "Styli" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: Styli
+      - navigation [ref=e9]:
+        - link "Discover" [ref=e10] [cursor=pointer]:
+          - /url: /recommendations
+        - link "Wardrobe" [ref=e11] [cursor=pointer]:
+          - /url: /wardrobe
+        - link "Wishlist" [ref=e12] [cursor=pointer]:
+          - /url: /wishlist
+      - generic [ref=e13]:
+        - link "Re-scan" [ref=e14] [cursor=pointer]:
+          - /url: /scan
+        - link "Sign in" [ref=e15] [cursor=pointer]:
+          - /url: /auth
+  - main [ref=e16]:
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - img [ref=e25]
+          - text: AI-powered personal styling
+        - heading "Dress for the body you have, right now." [level=1] [ref=e27]:
+          - text: Dress for the body
+          - text: you have,
+          - emphasis [ref=e28]: right now.
+        - paragraph [ref=e29]: One camera scan. Your body proportions, face shape, and color season — analyzed in seconds. Real recommendations for real clothes that actually suit you.
+        - generic [ref=e30]:
+          - link "Start your analysis — free" [ref=e31] [cursor=pointer]:
+            - /url: /scan
+            - button "Start your analysis — free" [ref=e32]:
+              - img [ref=e33]
+              - text: Start your analysis — free
+          - link "See recommendations" [ref=e36] [cursor=pointer]:
+            - /url: /recommendations
+            - text: See recommendations
+            - img [ref=e37]
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - generic [ref=e41]: 90%
+            - generic [ref=e42]: body shape accuracy
+          - generic [ref=e44]:
+            - generic [ref=e45]: "0"
+            - generic [ref=e46]: photos stored
+          - generic [ref=e48]:
+            - generic [ref=e49]: 5k+
+            - generic [ref=e50]: curated pieces
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - img [ref=e55]
+          - generic [ref=e62]: Analyzing...
+        - generic [ref=e65]:
+          - generic [ref=e66]: "& Other Stories"
+          - generic [ref=e67]: Rust Wrap Midi Dress
+          - generic [ref=e68]:
+            - generic [ref=e69]: $135
+            - generic [ref=e70]: 94% match
+        - generic [ref=e73]:
+          - generic [ref=e74]: Massimo Dutti
+          - generic [ref=e75]: Forest Green Blazer
+          - generic [ref=e76]:
+            - generic [ref=e77]: $220
+            - generic [ref=e78]: 91% match
+        - generic [ref=e81]:
+          - generic [ref=e82]: Arket
+          - generic [ref=e83]: Camel Trousers
+          - generic [ref=e84]:
+            - generic [ref=e85]: $89
+            - generic [ref=e86]: 89% match
+    - generic [ref=e88]:
+      - generic [ref=e89]:
+        - paragraph [ref=e90]: The process
+        - heading "How Styli works" [level=2] [ref=e91]
+      - generic [ref=e92]:
+        - generic [ref=e94]:
+          - generic [ref=e96]:
+            - img [ref=e97]
+            - generic [ref=e100]: "01"
+          - heading "One camera scan" [level=3] [ref=e101]
+          - paragraph [ref=e102]: Stand in front of your device. Our AI maps 33 body landmarks and 468 facial points in seconds. No photos stored — ever.
+        - generic [ref=e103]:
+          - generic [ref=e105]:
+            - img [ref=e106]
+            - generic [ref=e112]: "02"
+          - heading "Your style profile" [level=3] [ref=e113]
+          - paragraph [ref=e114]: Body shape, face shape, and color season — derived from science, confirmed by you. A style profile that's uniquely yours.
+        - generic [ref=e115]:
+          - generic [ref=e117]:
+            - img [ref=e118]
+            - generic [ref=e121]: "03"
+          - heading "Recommendations that fit" [level=3] [ref=e122]
+          - paragraph [ref=e123]: Clothing scored on color harmony, body fit, and your existing wardrobe. Every suggestion explained.
+    - generic [ref=e125]:
+      - generic [ref=e126]:
+        - paragraph [ref=e127]: What you get
+        - heading "Styling backed by science" [level=2] [ref=e128]
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - img [ref=e132]
+          - heading "AI Body Analysis" [level=3] [ref=e137]
+          - paragraph [ref=e138]: Body proportions from 33 MediaPipe landmarks. FFIT classification — the same system used in academic apparel research.
+        - generic [ref=e139]:
+          - img [ref=e141]
+          - heading "Color Season Matching" [level=3] [ref=e147]
+          - paragraph [ref=e148]: Monk 10-tone scale skin tone detection mapped to a 12-season color system. What actually works with your complexion.
+        - generic [ref=e149]:
+          - img [ref=e151]
+          - heading "Digital Wardrobe" [level=3] [ref=e153]
+          - paragraph [ref=e154]: Add items via URL paste, photo, or manual entry. Track wear counts, build outfits, identify what's missing.
+        - generic [ref=e155]:
+          - img [ref=e157]
+          - heading "Outfit Pairing" [level=3] [ref=e161]
+          - paragraph [ref=e162]: Recommendations show how many items in your wardrobe each piece pairs with. Practical, not aspirational.
+        - generic [ref=e163]:
+          - img [ref=e165]
+          - heading "Privacy-First" [level=3] [ref=e168]
+          - paragraph [ref=e169]: Raw camera frames never stored. Biometric data encrypted per-user. BIPA, GDPR, and CCPA compliant from day one.
+        - generic [ref=e170]:
+          - img [ref=e172]
+          - heading "Transparent Scoring" [level=3] [ref=e174]
+          - paragraph [ref=e175]: Every recommendation explains why — color harmony, body fit, outfit compatibility. No black box styling.
+    - generic [ref=e177]:
+      - generic [ref=e178]:
+        - paragraph [ref=e179]: Real users
+        - heading "What people are saying" [level=2] [ref=e180]
+      - generic [ref=e181]:
+        - generic [ref=e182]:
+          - generic [ref=e183]: “
+          - paragraph [ref=e184]: I've spent years buying clothes that looked great on the hanger but wrong on me. Styli explained exactly why — and what to look for instead.
+          - generic [ref=e185]:
+            - generic [ref=e186]: AM
+            - generic [ref=e187]:
+              - generic [ref=e188]: Aisha M.
+              - generic [ref=e189]: Warm Autumn · Pear
+        - generic [ref=e190]:
+          - generic [ref=e191]: “
+          - paragraph [ref=e192]: The wardrobe gap analysis is the feature I didn't know I needed. It showed me I have 12 tops but only 2 bottoms — obvious in hindsight.
+          - generic [ref=e193]:
+            - generic [ref=e194]: SL
+            - generic [ref=e195]:
+              - generic [ref=e196]: Sophie L.
+              - generic [ref=e197]: Cool Summer · Rectangle
+        - generic [ref=e198]:
+          - generic [ref=e199]: “
+          - paragraph [ref=e200]: Finally a styling app that works for deeper skin tones. The Monk scale confirmation means I actually trust the color recommendations.
+          - generic [ref=e201]:
+            - generic [ref=e202]: PK
+            - generic [ref=e203]:
+              - generic [ref=e204]: Priya K.
+              - generic [ref=e205]: Deep Autumn · Hourglass
+    - generic [ref=e209]:
+      - heading "Ready to dress like yourself?" [level=2] [ref=e210]:
+        - text: Ready to dress like
+        - emphasis [ref=e211]: yourself?
+      - paragraph [ref=e212]:
+        - text: Your style analysis is free. No subscription required to start.
+        - text: Add your wardrobe, get real recommendations in minutes.
+      - link "Start your style analysis" [ref=e213] [cursor=pointer]:
+        - /url: /scan
+        - button "Start your style analysis" [ref=e214]:
+          - img [ref=e215]
+          - text: Start your style analysis
+      - paragraph [ref=e218]: No photos stored · BIPA compliant · Delete your data anytime
+  - contentinfo [ref=e219]:
+    - generic [ref=e220]:
+      - generic [ref=e221]:
+        - generic [ref=e222]:
+          - link "Styli" [ref=e223] [cursor=pointer]:
+            - /url: /
+            - img [ref=e224]
+            - generic [ref=e226]: Styli
+          - paragraph [ref=e227]: AI-powered personal styling. Recommendations backed by research, not guesswork.
+        - generic [ref=e228]:
+          - heading "Product" [level=4] [ref=e229]
+          - list [ref=e230]:
+            - listitem [ref=e231]:
+              - link "How it works" [ref=e232] [cursor=pointer]:
+                - /url: /#how-it-works
+            - listitem [ref=e233]:
+              - link "Recommendations" [ref=e234] [cursor=pointer]:
+                - /url: /recommendations
+            - listitem [ref=e235]:
+              - link "Wardrobe" [ref=e236] [cursor=pointer]:
+                - /url: /wardrobe
+            - listitem [ref=e237]:
+              - link "Pricing" [ref=e238] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e239]:
+          - heading "Company" [level=4] [ref=e240]
+          - list [ref=e241]:
+            - listitem [ref=e242]:
+              - link "About" [ref=e243] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e244]:
+              - link "Blog" [ref=e245] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e246]:
+              - link "Careers" [ref=e247] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e248]:
+              - link "Contact" [ref=e249] [cursor=pointer]:
+                - /url: "#"
+        - generic [ref=e250]:
+          - heading "Legal" [level=4] [ref=e251]
+          - list [ref=e252]:
+            - listitem [ref=e253]:
+              - link "Privacy Policy" [ref=e254] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e255]:
+              - link "Terms of Service" [ref=e256] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e257]:
+              - link "BIPA Notice" [ref=e258] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e259]:
+              - link "Cookie Policy" [ref=e260] [cursor=pointer]:
+                - /url: "#"
+      - generic [ref=e261]:
+        - paragraph [ref=e262]: © 2026 Styli. No raw biometric data stored. BIPA / GDPR / CCPA compliant.
+        - paragraph [ref=e263]: Styled by AI · Confirmed by you

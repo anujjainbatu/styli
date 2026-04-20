@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  supabaseId    String   @unique
+  email         String   @unique
+  displayName   String
+  avatarUrl     String?
+  scanCompleted Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  preferences   StylePreferences?
+  bodyProfile   BodyProfile?
+  wardrobeItems WardrobeItem[]
+  wishlistItems WishlistItem[]
+  outfits       Outfit[]
+}
+
+model StylePreferences {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  genderIdentity  String?
+  heightCm        Float?
+  preferredStyles String[]
+  budgetTier      String?
+  budgetMinUsd    Int?
+  budgetMaxUsd    Int?
+  updatedAt       DateTime @updatedAt
+}
+
+model BodyProfile {
+  id                     String   @id @default(cuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bodyShape              String?
+  bodyShapeConfidence    Float?
+  faceShape              String?
+  faceShapeConfidence    Float?
+  monkTone               Int?
+  skinUndertone          String?
+  colorSeason            String?
+  skinToneConfirmed      Boolean  @default(false)
+  recommendedSilhouettes String[]
+  recommendedNecklines   String[]
+  colorPalette           String[]
+  avoidColors            String[]
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model WardrobeItem {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productName     String
+  brand           String?
+  category        String
+  primaryColor    String?
+  primaryColorHex String?
+  secondaryColor  String?
+  pattern         String?
+  material        String?
+  formalityLevel  Int?
+  seasonTags      String[]
+  price           Float?
+  imageUrl        String?
+  productUrl      String?
+  wearCount       Int       @default(0)
+  lastWornAt      DateTime?
+  isFavorite      Boolean   @default(false)
+  source          String    @default("manual")
+  deletedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  outfitItems OutfitItem[]
+
+  @@index([userId])
+  @@index([userId, category])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+
+model WishlistItem {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productName     String
+  brand           String?
+  price           Float?
+  imageUrl        String?
+  category        String?
+  matchScore      Float?
+  affiliateUrl    String?
+  primaryColor    String?
+  primaryColorHex String?
+  explanations    Json?
+  externalId      String?
+  savedAt         DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, category])
+  @@unique([userId, externalId])
+}
+
+model Outfit {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String?
+  source         String    @default("ai_generated")
+  occasion       String?
+  season         String?
+  formalityLevel Int?
+  overallScore   Float?
+  isSaved        Boolean   @default(false)
+  wornCount      Int       @default(0)
+  lastWornAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  items OutfitItem[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model OutfitItem {
+  outfitId       String
+  wardrobeItemId String
+  slot           String
+  outfit         Outfit       @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  wardrobeItem   WardrobeItem @relation(fields: [wardrobeItemId], references: [id], onDelete: Cascade)
+
+  @@id([outfitId, slot])
+}

@@ -1,0 +1,261 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "Styli" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e6]
+        - generic [ref=e8]: Styli
+      - navigation [ref=e9]:
+        - link "Discover" [ref=e10] [cursor=pointer]:
+          - /url: /recommendations
+        - link "Wardrobe" [ref=e11] [cursor=pointer]:
+          - /url: /wardrobe
+        - link "Wishlist" [ref=e12] [cursor=pointer]:
+          - /url: /wishlist
+      - generic [ref=e13]:
+        - link "Re-scan" [ref=e14] [cursor=pointer]:
+          - /url: /scan
+        - link "Sign in" [ref=e15] [cursor=pointer]:
+          - /url: /auth
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e19]:
+        - heading "My wardrobe" [level=1] [ref=e20]
+        - paragraph [ref=e21]: 15 items across 7 categories
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]: "15"
+          - generic [ref=e25]: Total items
+        - generic [ref=e26]:
+          - generic [ref=e27]: "7"
+          - generic [ref=e28]: Categories
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - img [ref=e31]
+            - generic [ref=e34]: 100%
+          - generic [ref=e35]: Capsule
+      - generic [ref=e36]:
+        - tablist [ref=e37]:
+          - tab "All" [selected] [ref=e38] [cursor=pointer]
+          - tab "Tops" [ref=e39] [cursor=pointer]
+          - tab "Bottoms" [ref=e40] [cursor=pointer]
+          - tab "Dresses" [ref=e41] [cursor=pointer]
+          - tab "Outerwear" [ref=e42] [cursor=pointer]
+          - tab "Shoes" [ref=e43] [cursor=pointer]
+          - tab "Accessories" [ref=e44] [cursor=pointer]
+          - tab "Bags" [ref=e45] [cursor=pointer]
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - img [ref=e48]
+            - combobox [ref=e50] [cursor=pointer]:
+              - option "Recently added" [selected]
+              - option "Most worn"
+              - option "Least worn"
+              - option "By color"
+          - generic [ref=e51]:
+            - button "Grid view" [pressed] [ref=e52] [cursor=pointer]:
+              - img [ref=e53]
+            - button "List view" [ref=e58] [cursor=pointer]:
+              - img [ref=e59]
+      - generic [ref=e60]:
+        - article [ref=e61]:
+          - generic [ref=e62]:
+            - img "White Linen Shirt" [ref=e63]
+            - button "Unfavorite" [pressed] [ref=e64] [cursor=pointer]:
+              - img [ref=e65]
+            - generic [ref=e67]: 12×
+            - generic [ref=e68]: url
+          - generic [ref=e69]:
+            - paragraph [ref=e70]: Everlane
+            - paragraph [ref=e71]: White Linen Shirt
+            - generic [ref=e72]:
+              - generic [ref=e75]: white
+              - generic [ref=e76]: Apr 15
+        - article [ref=e77]:
+          - generic [ref=e78]:
+            - img "Black Straight Jeans" [ref=e79]
+            - button "Unfavorite" [pressed] [ref=e80] [cursor=pointer]:
+              - img [ref=e81]
+            - generic [ref=e83]: 18×
+            - generic [ref=e84]: manual
+          - generic [ref=e85]:
+            - paragraph [ref=e86]: Mango
+            - paragraph [ref=e87]: Black Straight Jeans
+            - generic [ref=e88]:
+              - generic [ref=e91]: black
+              - generic [ref=e92]: Apr 18
+        - article [ref=e93]:
+          - generic [ref=e94]:
+            - img "Camel Wool Coat" [ref=e95]
+            - button "Unfavorite" [pressed] [ref=e96] [cursor=pointer]:
+              - img [ref=e97]
+            - generic [ref=e99]: 6×
+            - generic [ref=e100]: url
+          - generic [ref=e101]:
+            - paragraph [ref=e102]: Zara
+            - paragraph [ref=e103]: Camel Wool Coat
+            - generic [ref=e104]:
+              - generic [ref=e107]: camel
+              - generic [ref=e108]: Apr 10
+        - article [ref=e109]:
+          - generic [ref=e110]:
+            - img "Navy Midi Dress" [ref=e111]
+            - button "Favorite" [ref=e112] [cursor=pointer]:
+              - img [ref=e113]
+            - generic [ref=e115]: 4×
+            - generic [ref=e116]: url
+          - generic [ref=e117]:
+            - paragraph [ref=e118]: "& Other Stories"
+            - paragraph [ref=e119]: Navy Midi Dress
+            - generic [ref=e120]:
+              - generic [ref=e123]: navy
+              - generic [ref=e124]: Mar 28
+        - article [ref=e125]:
+          - generic [ref=e126]:
+            - img "Tan Ankle Boots" [ref=e127]
+            - button "Unfavorite" [pressed] [ref=e128] [cursor=pointer]:
+              - img [ref=e129]
+            - generic [ref=e131]: 15×
+            - generic [ref=e132]: manual
+          - generic [ref=e133]:
+            - paragraph [ref=e134]: Steve Madden
+            - paragraph [ref=e135]: Tan Ankle Boots
+            - generic [ref=e136]:
+              - generic [ref=e139]: tan
+              - generic [ref=e140]: Apr 17
+        - article [ref=e141]:
+          - generic [ref=e142]:
+            - img "Cream Knit Sweater" [ref=e143]
+            - button "Favorite" [ref=e144] [cursor=pointer]:
+              - img [ref=e145]
+            - generic [ref=e147]: 9×
+            - generic [ref=e148]: image
+          - generic [ref=e149]:
+            - paragraph [ref=e150]: H&M
+            - paragraph [ref=e151]: Cream Knit Sweater
+            - generic [ref=e152]:
+              - generic [ref=e155]: cream
+              - generic [ref=e156]: Apr 12
+        - article [ref=e157]:
+          - generic [ref=e158]:
+            - img "Olive Cargo Pants" [ref=e159]
+            - button "Favorite" [ref=e160] [cursor=pointer]:
+              - img [ref=e161]
+            - generic [ref=e163]: 3×
+            - generic [ref=e164]: manual
+          - generic [ref=e165]:
+            - paragraph [ref=e166]: ASOS
+            - paragraph [ref=e167]: Olive Cargo Pants
+            - generic [ref=e168]:
+              - generic [ref=e171]: olive
+              - generic [ref=e172]: Apr 5
+        - article [ref=e173]:
+          - generic [ref=e174]:
+            - img "Gold Hoop Earrings" [ref=e175]
+            - button "Unfavorite" [pressed] [ref=e176] [cursor=pointer]:
+              - img [ref=e177]
+            - generic [ref=e179]: 22×
+            - generic [ref=e180]: manual
+          - generic [ref=e181]:
+            - paragraph [ref=e182]: Mejuri
+            - paragraph [ref=e183]: Gold Hoop Earrings
+            - generic [ref=e184]:
+              - generic [ref=e187]: gold
+              - generic [ref=e188]: Apr 20
+        - article [ref=e189]:
+          - generic [ref=e190]:
+            - img "Brown Leather Tote" [ref=e191]
+            - button "Unfavorite" [pressed] [ref=e192] [cursor=pointer]:
+              - img [ref=e193]
+            - generic [ref=e195]: 11×
+            - generic [ref=e196]: url
+          - generic [ref=e197]:
+            - paragraph [ref=e198]: Madewell
+            - paragraph [ref=e199]: Brown Leather Tote
+            - generic [ref=e200]:
+              - generic [ref=e203]: brown
+              - generic [ref=e204]: Apr 19
+        - article [ref=e205]:
+          - generic [ref=e206]:
+            - img "Rust Turtleneck" [ref=e207]
+            - button "Favorite" [ref=e208] [cursor=pointer]:
+              - img [ref=e209]
+            - generic [ref=e211]: 7×
+            - generic [ref=e212]: manual
+          - generic [ref=e213]:
+            - paragraph [ref=e214]: Uniqlo
+            - paragraph [ref=e215]: Rust Turtleneck
+            - generic [ref=e216]:
+              - generic [ref=e219]: rust
+              - generic [ref=e220]: Apr 8
+        - article [ref=e221]:
+          - generic [ref=e222]:
+            - img "White Sneakers" [ref=e223]
+            - button "Unfavorite" [pressed] [ref=e224] [cursor=pointer]:
+              - img [ref=e225]
+            - generic [ref=e227]: 20×
+            - generic [ref=e228]: url
+          - generic [ref=e229]:
+            - paragraph [ref=e230]: Common Projects
+            - paragraph [ref=e231]: White Sneakers
+            - generic [ref=e232]:
+              - generic [ref=e235]: white
+              - generic [ref=e236]: Apr 20
+        - article [ref=e237]:
+          - generic [ref=e238]:
+            - img "Terracotta Linen Blazer" [ref=e239]
+            - button "Favorite" [ref=e240] [cursor=pointer]:
+              - img [ref=e241]
+            - generic [ref=e243]: 2×
+            - generic [ref=e244]: url
+          - generic [ref=e245]:
+            - paragraph [ref=e246]: Club Monaco
+            - paragraph [ref=e247]: Terracotta Linen Blazer
+            - generic [ref=e248]:
+              - generic [ref=e251]: terracotta
+              - generic [ref=e252]: Mar 15
+        - article [ref=e253]:
+          - generic [ref=e254]:
+            - img "Dark Wash Bootcut Jeans" [ref=e255]
+            - button "Favorite" [ref=e256] [cursor=pointer]:
+              - img [ref=e257]
+            - generic [ref=e259]: 8×
+            - generic [ref=e260]: url
+          - generic [ref=e261]:
+            - paragraph [ref=e262]: AG Jeans
+            - paragraph [ref=e263]: Dark Wash Bootcut Jeans
+            - generic [ref=e264]:
+              - generic [ref=e267]: indigo
+              - generic [ref=e268]: Apr 14
+        - article [ref=e269]:
+          - generic [ref=e270]:
+            - img "Silk Slip Dress" [ref=e271]
+            - button "Unfavorite" [pressed] [ref=e272] [cursor=pointer]:
+              - img [ref=e273]
+            - generic [ref=e275]: 1×
+            - generic [ref=e276]: url
+          - generic [ref=e277]:
+            - paragraph [ref=e278]: Reformation
+            - paragraph [ref=e279]: Silk Slip Dress
+            - generic [ref=e280]:
+              - generic [ref=e283]: champagne
+              - generic [ref=e284]: Feb 14
+        - article [ref=e285]:
+          - generic [ref=e286]:
+            - img "Patterned Silk Scarf" [ref=e287]
+            - button "Favorite" [ref=e288] [cursor=pointer]:
+              - img [ref=e289]
+            - generic [ref=e291]: 5×
+            - generic [ref=e292]: image
+          - generic [ref=e293]:
+            - paragraph [ref=e294]: Zara
+            - paragraph [ref=e295]: Patterned Silk Scarf
+            - generic [ref=e296]:
+              - generic [ref=e299]: multi
+              - generic [ref=e300]: Apr 11
+    - link "Add wardrobe item" [ref=e301] [cursor=pointer]:
+      - /url: /wardrobe/add
+      - img [ref=e302]
+  - button "Open Next.js Dev Tools" [ref=e308] [cursor=pointer]:
+    - img [ref=e309]
+  - alert [ref=e312]

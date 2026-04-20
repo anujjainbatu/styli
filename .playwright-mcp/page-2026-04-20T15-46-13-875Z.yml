@@ -1,0 +1,51 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e6]:
+      - img [ref=e7]
+      - heading "Your style, scientifically matched." [level=2] [ref=e9]:
+        - text: Your style,
+        - emphasis [ref=e10]: scientifically
+        - text: matched.
+      - paragraph [ref=e11]: One scan. A style profile built from body proportions, face shape, and color season analysis.
+      - generic [ref=e12]:
+        - generic [ref=e13]: Hourglass
+        - generic [ref=e14]: Oval face
+        - generic [ref=e15]: Warm Autumn
+    - generic [ref=e17]:
+      - link "Styli" [ref=e18] [cursor=pointer]:
+        - /url: /
+        - img [ref=e19]
+        - generic [ref=e21]: Styli
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - button "Sign in" [ref=e24] [cursor=pointer]
+          - button "Create account" [ref=e25] [cursor=pointer]
+        - heading "Welcome back" [level=1] [ref=e26]
+        - paragraph [ref=e27]: Sign in to access your style profile and wardrobe.
+      - button "Continue with Google" [ref=e28] [cursor=pointer]:
+        - img [ref=e29]
+        - text: Continue with Google
+      - generic [ref=e36]: or continue with email
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - text: Email
+          - textbox "Email" [ref=e40]:
+            - /placeholder: you@example.com
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - generic [ref=e43]: Password
+            - button "Forgot password?" [ref=e44] [cursor=pointer]
+          - generic [ref=e45]:
+            - textbox "Password" [ref=e46]:
+              - /placeholder: ••••••••
+            - button "Show password" [ref=e47] [cursor=pointer]:
+              - img [ref=e48]
+        - button "Sign in" [ref=e51] [cursor=pointer]:
+          - text: Sign in
+          - img [ref=e52]
+      - paragraph [ref=e54]:
+        - text: Don't have an account?
+        - button "Sign up free" [ref=e55] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e61] [cursor=pointer]:
+    - img [ref=e62]
+  - alert [ref=e65]
