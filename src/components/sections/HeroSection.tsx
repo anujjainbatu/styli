@@ -3,34 +3,35 @@
 import Link from "next/link";
 import { ArrowRight, Camera, Sparkles } from "lucide-react";
 import GoldButton from "@/components/ui/GoldButton";
+import { formatPrice } from "@/lib/utils";
 
 const FLOATING_ITEMS = [
   {
-    name: "Rust Wrap Midi Dress",
-    brand: "& Other Stories",
-    price: "$135",
+    name: "Geometric Wrap Crop Top",
+    brand: "SASSAFRAS",
+    price: 1499,
     match: "94%",
-    color: "bg-amber-800",
+    imageUrl: "http://assets.myntassets.com/assets/images/13842966/2021/4/3/3d20dde9-8c47-48f2-a079-8cdacd9c78b11617444711671-Sassafras-Brown--Red-Geometric-Printed-Georgette-Wrap-Crop-T-1.jpg",
     top: "10%",
     left: "60%",
     delay: "0s",
   },
   {
-    name: "Forest Green Blazer",
-    brand: "Massimo Dutti",
-    price: "$220",
+    name: "Olive Printed Bomber Jacket",
+    brand: "SASSAFRAS",
+    price: 1999,
     match: "91%",
-    color: "bg-green-800",
+    imageUrl: "http://assets.myntassets.com/assets/images/7413634/2018/9/25/698989b2-7431-4da8-891d-746b903a8d2e1537854481515-SASSAFRAS-Women-Olive-Green-Printed-Bomber-5461537854481335-1.jpg",
     top: "40%",
     left: "72%",
     delay: "0.3s",
   },
   {
-    name: "Camel Trousers",
-    brand: "Arket",
-    price: "$89",
+    name: "Cropped Cigarette Trousers",
+    brand: "Anouk",
+    price: 1299,
     match: "89%",
-    color: "bg-yellow-700",
+    imageUrl: "http://assets.myntassets.com/assets/images/13913356/2021/6/7/720c921c-c3c4-4aa3-aa51-76906841752f1623060947263-Anouk-Women-White-Embroidered-Cigarette-Trousers-35016230609-1.jpg",
     top: "68%",
     left: "58%",
     delay: "0.6s",
@@ -146,12 +147,18 @@ export default function HeroSection() {
                   animationDelay: item.delay,
                 }}
               >
-                <div className={`${item.color} w-full h-20 rounded-lg mb-2`} />
+                <div className="w-full h-20 rounded-lg mb-2 overflow-hidden bg-bg-elevated">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <div className="space-y-0.5">
                   <div className="text-xs text-muted font-sans">{item.brand}</div>
                   <div className="text-sm text-cream font-sans truncate">{item.name}</div>
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-cream text-sm font-sans font-medium">{item.price}</span>
+                    <span className="text-cream text-sm font-sans font-medium">{formatPrice(item.price)}</span>
                     <span className="text-xs bg-gold/20 text-gold px-2 py-0.5 rounded-full font-sans">
                       {item.match} match
                     </span>

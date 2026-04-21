@@ -1,4 +1,5 @@
 import { z } from "zod"
+import type { RecommendationItem } from "@/lib/mock-data"
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
 
@@ -118,8 +119,17 @@ export const RecommendationQuerySchema = z.object({
   category: z.string().optional(),
   sort: z.enum(["best_match", "price_asc", "price_desc", "newest"]).default("best_match"),
   limit: z.coerce.number().int().min(1).max(50).default(20),
+  intent: z.string().max(200).optional(),
 })
 export type RecommendationQuery = z.infer<typeof RecommendationQuerySchema>
+
+export type IntentResponse = { keywords: string[] }
+
+export type RecommendationResponse = {
+  items: RecommendationItem[]
+  fallback: boolean
+  fallbackReason?: string
+}
 
 // ─── Outfits ─────────────────────────────────────────────────────────────────
 

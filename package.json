@@ -9,13 +9,16 @@
     "lint": "next lint",
     "db:seed": "dotenv -e .env.local -- tsx prisma/seed.ts",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "catalog:build": "tsx scripts/transform-catalog.ts",
+    "catalog:add": "tsx scripts/transform-catalog.ts --append"
   },
   "prisma": {
     "seed": "dotenv -e .env.local -- tsx prisma/seed.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",
+    "@mediapipe/tasks-vision": "^0.10.34",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@radix-ui/react-avatar": "^1.1.2",

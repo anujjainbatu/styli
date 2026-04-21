@@ -55,6 +55,27 @@ const config: Config = {
           "0%": { top: "0%" },
           "100%": { top: "100%" },
         },
+        "arrow-bounce-up": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        "arrow-bounce-down": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(6px)" },
+        },
+        "arrow-bounce-left": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(-6px)" },
+        },
+        "arrow-bounce-right": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(6px)" },
+        },
+        "pulse-ring": {
+          "0%": { boxShadow: "0 0 0 0 rgba(92,184,122,0.5)" },
+          "70%": { boxShadow: "0 0 0 16px rgba(92,184,122,0)" },
+          "100%": { boxShadow: "0 0 0 0 rgba(92,184,122,0)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.4s ease forwards",
@@ -62,6 +83,11 @@ const config: Config = {
         shimmer: "shimmer 2s linear infinite",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "scan-line": "scan-line 3s linear infinite",
+        "arrow-bounce-up": "arrow-bounce-up 0.8s ease-in-out infinite",
+        "arrow-bounce-down": "arrow-bounce-down 0.8s ease-in-out infinite",
+        "arrow-bounce-left": "arrow-bounce-left 0.8s ease-in-out infinite",
+        "arrow-bounce-right": "arrow-bounce-right 0.8s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 1.5s ease-out infinite",
       },
       backgroundImage: {
         "gold-gradient":

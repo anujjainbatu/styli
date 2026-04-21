@@ -57,6 +57,7 @@ export type RecommendationItem = {
   price: number;
   imageUrl: string;
   category: string;
+  gender?: "women" | "men" | "unisex";
   matchScore: number;
   explanations: Array<{ icon: string; text: string }>;
   pairsWithCount: number;

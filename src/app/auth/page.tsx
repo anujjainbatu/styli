@@ -20,6 +20,7 @@ export default function AuthPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,9 +41,12 @@ export default function AuthPage() {
         });
         if (signUpError) throw new Error(signUpError.message);
 
-        if (data.user) {
-          await fetch("/api/onboarding", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+        if (!data.session) {
+          // Supabase sent a confirmation email — session won't exist until verified
+          setVerifyEmail(email);
+          return;
         }
+        await fetch("/api/onboarding", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
         router.push("/onboarding");
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -66,6 +70,39 @@ export default function AuthPage() {
       options: { redirectTo: `${window.location.origin}/recommendations` },
     });
   };
+
+  if (verifyEmail) {
+    return (
+      <div className="min-h-screen bg-bg-base flex items-center justify-center p-6">
+        <div className="w-full max-w-sm text-center space-y-6">
+          <div className="w-14 h-14 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mx-auto">
+            <Sparkles size={24} className="text-gold" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="font-display text-3xl font-light text-cream">Check your inbox</h1>
+            <p className="text-muted text-sm font-sans leading-relaxed">
+              We sent a verification link to{" "}
+              <span className="text-cream font-medium">{verifyEmail}</span>.
+              Click the link to activate your account and start your style journey.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-bg-surface border border-border text-left space-y-2">
+            <p className="text-xs font-sans text-muted">Can&apos;t find the email?</p>
+            <ul className="text-xs font-sans text-muted/70 space-y-1 list-disc list-inside">
+              <li>Check your spam or junk folder</li>
+              <li>Make sure you entered the right address</li>
+            </ul>
+          </div>
+          <button
+            onClick={() => { setVerifyEmail(null); setMode("signin"); }}
+            className="text-xs font-sans text-gold hover:text-gold-light transition-colors"
+          >
+            Back to sign in
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-bg-base flex">

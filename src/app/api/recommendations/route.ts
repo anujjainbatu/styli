@@ -16,10 +16,11 @@ export async function GET(req: NextRequest) {
       category: searchParams.get("category") ?? undefined,
       sort:     searchParams.get("sort")     ?? undefined,
       limit:    searchParams.get("limit")    ?? undefined,
+      intent:   searchParams.get("intent")   ?? undefined,
     })
 
-    const items = await getRecommendations(user.id, query)
-    return NextResponse.json({ items })
+    const result = await getRecommendations(user.id, query)
+    return NextResponse.json(result)
   } catch (e) {
     return apiError(e)
   }

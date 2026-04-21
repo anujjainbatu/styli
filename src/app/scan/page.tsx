@@ -3,20 +3,92 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check, AlertTriangle, X, Camera, Sparkles, RefreshCw } from "lucide-react";
+import {
+  Check,
+  AlertTriangle,
+  X,
+  Camera,
+  Sparkles,
+  RefreshCw,
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import GoldButton from "@/components/ui/GoldButton";
+import ScanOverlay from "@/components/scan/ScanOverlay";
+import { usePoseLandmarker } from "@/hooks/usePoseLandmarker";
+import type { QualityCheck } from "@/hooks/usePoseLandmarker";
 
 type ScanStep = "consent" | "guidance" | "scanning" | "analysing" | "complete" | "failed";
 
-const GUIDANCE_CHECKS = [
-  { id: "distance", text: "Stand 5–6 feet from camera" },
-  { id: "posture", text: "Stand straight, arms slightly out" },
-  { id: "lighting", text: "Ensure good lighting" },
-  { id: "fullbody", text: "Full body visible in frame" },
+const TOTAL_FRAMES = 5;
+
+// Shown only when no pose detected yet (hint list)
+const SETUP_HINTS = [
+  "Stand 5–6 feet from your camera",
+  "Full body should fit in the frame",
+  "Good lighting helps accuracy",
 ];
 
-const TOTAL_FRAMES = 5;
+function getPositionMessage(qc: QualityCheck): string {
+  if (qc.bodyNotVisible) return "Step back so your full body is visible";
+  if (qc.tooClose) return "Step back a little";
+  if (qc.tooFar) return "Step forward a little";
+  if (qc.tooLeft) return "Move right";
+  if (qc.tooRight) return "Move left";
+  if (qc.ready) return "Perfect — hold still";
+  return "Position yourself in the frame";
+}
+
+interface ArrowCueProps {
+  direction: "up" | "down" | "left" | "right";
+  label: string;
+}
+
+function ArrowCue({ direction, label }: ArrowCueProps) {
+  const Icon =
+    direction === "up"
+      ? ChevronUp
+      : direction === "down"
+      ? ChevronDown
+      : direction === "left"
+      ? ChevronLeft
+      : ChevronRight;
+
+  const positionClass =
+    direction === "up"
+      ? "top-3 left-1/2 -translate-x-1/2 flex-col"
+      : direction === "down"
+      ? "bottom-14 left-1/2 -translate-x-1/2 flex-col"
+      : direction === "left"
+      ? "left-3 top-1/2 -translate-y-1/2 flex-row"
+      : "right-3 top-1/2 -translate-y-1/2 flex-row";
+
+  const animClass =
+    direction === "up"
+      ? "animate-arrow-bounce-up"
+      : direction === "down"
+      ? "animate-arrow-bounce-down"
+      : direction === "left"
+      ? "animate-arrow-bounce-left"
+      : "animate-arrow-bounce-right";
+
+  return (
+    <div
+      className={cn(
+        "absolute flex items-center gap-1 px-2 py-1.5 rounded-xl bg-bg-base/85 border border-gold/40 backdrop-blur-sm",
+        positionClass,
+        animClass
+      )}
+    >
+      <Icon size={16} className="text-gold" />
+      <span className="text-xs font-sans text-gold/90 whitespace-nowrap">{label}</span>
+    </div>
+  );
+}
 
 export default function ScanPage() {
   const router = useRouter();
@@ -30,6 +102,29 @@ export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const consentTimestamp = useRef<string | null>(null);
+
+  const poseActive = scanStep === "guidance" || scanStep === "scanning";
+  const { landmarks, qualityCheck, isLoading: poseLoading, failed: poseFailed } = usePoseLandmarker(
+    videoRef,
+    poseActive
+  );
+
+  // Auto-advance when position is good for 1.5s
+  useEffect(() => {
+    if (scanStep !== "guidance" || poseFailed) return;
+    if (!qualityCheck.ready) return;
+    const t = setTimeout(() => {
+      setScanStep("scanning");
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [qualityCheck.ready, scanStep, poseFailed]);
+
+  // Fallback: if pose detection failed, advance after 3s
+  useEffect(() => {
+    if (scanStep !== "guidance" || !poseFailed) return;
+    const t = setTimeout(() => setScanStep("scanning"), 3000);
+    return () => clearTimeout(t);
+  }, [scanStep, poseFailed]);
 
   useEffect(() => {
     return () => {
@@ -63,22 +158,43 @@ export default function ScanPage() {
         video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
+      // Move to guidance FIRST so the <video> element mounts, then wire it up in useEffect
       setScanStep("guidance");
+    } catch (err) {
+      stopCamera();
+      if (err instanceof DOMException && err.name === "NotAllowedError") {
+        setCameraError("Camera access denied. Please allow camera access in your browser settings.");
+      } else {
+        setCameraError("Camera not available. Please check your device.");
+      }
+    }
+  }, [stopCamera]);
 
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-      setScanStep("scanning");
+  // Wire the stream to the video element after it mounts (guidance step)
+  useEffect(() => {
+    if (scanStep !== "guidance") return;
+    const video = videoRef.current;
+    const stream = streamRef.current;
+    if (!video || !stream) return;
+    video.srcObject = stream;
+    video.play().catch(() => {});
+  }, [scanStep]);
 
+  // Capture frames once scanning starts
+  useEffect(() => {
+    if (scanStep !== "scanning") return;
+
+    let cancelled = false;
+    async function runCapture() {
       const blobs: Blob[] = [];
       for (let i = 0; i < TOTAL_FRAMES; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 900));
+        await new Promise((r) => setTimeout(r, 900));
+        if (cancelled) return;
         const blob = await captureFrame();
         if (blob) blobs.push(blob);
-        setCapturedFrames((n) => n + 1);
+        if (!cancelled) setCapturedFrames((n) => n + 1);
       }
+      if (cancelled) return;
 
       stopCamera();
       setScanStep("analysing");
@@ -87,28 +203,24 @@ export default function ScanPage() {
       blobs.forEach((blob, i) => form.append("frames", blob, `frame_${i}.jpg`));
       if (consentTimestamp.current) form.append("consentGivenAt", consentTimestamp.current);
 
-      const res = await fetch("/api/scan/frames", { method: "POST", body: form });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "Analysis failed");
-      }
-      const data = await res.json();
-      setWarnings(data.warnings ?? []);
-      setScanStep("complete");
-    } catch (err) {
-      stopCamera();
-      if (err instanceof DOMException && err.name === "NotAllowedError") {
-        setCameraError("Camera access denied. Please allow camera access in your browser settings.");
-        setScanStep("consent");
-      } else if (err instanceof DOMException) {
-        setCameraError("Camera not available. Please check your device.");
-        setScanStep("consent");
-      } else {
+      try {
+        const res = await fetch("/api/scan/frames", { method: "POST", body: form });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error((data as { error?: string }).error ?? "Analysis failed");
+        }
+        const data = (await res.json()) as { warnings?: string[] };
+        setWarnings(data.warnings ?? []);
+        setScanStep("complete");
+      } catch (err) {
         setApiError(err instanceof Error ? err.message : "Analysis failed");
         setScanStep("failed");
       }
     }
-  }, [captureFrame, stopCamera]);
+
+    runCapture();
+    return () => { cancelled = true; };
+  }, [scanStep, captureFrame, stopCamera]);
 
   const retry = useCallback(() => {
     setCapturedFrames(0);
@@ -117,11 +229,16 @@ export default function ScanPage() {
     setScanStep("consent");
   }, []);
 
+  const showLiveCamera = scanStep === "guidance" || scanStep === "scanning";
+
   return (
     <div className="min-h-screen bg-bg-base flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-8 py-4 border-b border-border">
-        <Link href="/intake" className="text-muted hover:text-cream text-sm font-sans transition-colors flex items-center gap-2">
+        <Link
+          href="/intake"
+          className="text-muted hover:text-cream text-sm font-sans transition-colors flex items-center gap-2"
+        >
           <X size={16} />
           Cancel
         </Link>
@@ -132,7 +249,7 @@ export default function ScanPage() {
         <div className="w-16" />
       </div>
 
-      {/* Consent step */}
+      {/* Consent */}
       {scanStep === "consent" && (
         <div className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-md w-full space-y-6 animate-fade-in">
@@ -144,8 +261,8 @@ export default function ScanPage() {
                 Before we scan
               </h1>
               <p className="text-muted font-sans text-sm leading-relaxed">
-                Styli will analyze your body proportions, face shape, and skin tone
-                to build your personal style profile.
+                Styli will analyze your body proportions, face shape, and skin tone to build your
+                personal style profile.
               </p>
             </div>
 
@@ -192,8 +309,8 @@ export default function ScanPage() {
                 className="mt-0.5 w-4 h-4 accent-gold cursor-pointer"
               />
               <span className="text-xs font-sans text-muted leading-relaxed">
-                I consent to the collection and processing of my biometric data
-                (facial geometry and body proportions) for style analysis, as described in the{" "}
+                I consent to the collection and processing of my biometric data (facial geometry and
+                body proportions) for style analysis, as described in the{" "}
                 <a href="#" className="text-gold underline underline-offset-2 hover:text-gold-light">
                   Privacy Policy
                 </a>{" "}
@@ -218,11 +335,47 @@ export default function ScanPage() {
         </div>
       )}
 
-      {/* Guidance + scanning — live video feed */}
-      {(scanStep === "guidance" || scanStep === "scanning") && (
-        <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-6">
+      {/* Guidance + Scanning — live camera */}
+      {showLiveCamera && (
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 gap-4">
           <div className="w-full max-w-sm space-y-4">
-            <div className="relative w-full aspect-[3/4] bg-bg-elevated rounded-3xl border-2 border-gold/30 overflow-hidden shadow-gold-lg">
+            {/* Status message */}
+            <div className="text-center min-h-[28px]">
+              {poseLoading && !poseFailed && (
+                <span className="text-xs font-sans text-muted flex items-center justify-center gap-2">
+                  <Loader2 size={12} className="animate-spin" />
+                  Activating pose guide…
+                </span>
+              )}
+              {(!poseLoading || poseFailed) && scanStep === "guidance" && (
+                <p
+                  className={cn(
+                    "text-sm font-sans font-medium transition-colors",
+                    qualityCheck.ready ? "text-success" : "text-gold"
+                  )}
+                >
+                  {getPositionMessage(qualityCheck)}
+                </p>
+              )}
+              {scanStep === "scanning" && (
+                <p className="text-sm font-sans text-gold">
+                  Hold still — capturing frame {capturedFrames} of {TOTAL_FRAMES}
+                </p>
+              )}
+            </div>
+
+            {/* Camera viewport */}
+            <div
+              className={cn(
+                "relative w-full aspect-[3/4] rounded-3xl border-2 overflow-hidden transition-all duration-500",
+                scanStep === "scanning"
+                  ? "border-gold/60"
+                  : qualityCheck.ready
+                  ? "border-success animate-pulse-ring shadow-[0_0_28px_rgba(92,184,122,0.25)]"
+                  : "border-gold/30"
+              )}
+            >
+              {/* Video */}
               <video
                 ref={videoRef}
                 autoPlay
@@ -231,49 +384,85 @@ export default function ScanPage() {
                 className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
               />
 
-              {scanStep === "scanning" && (
-                <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent animate-scan-line" />
+              {/* Canvas overlay: silhouette + center line + skeleton */}
+              <ScanOverlay
+                landmarks={landmarks}
+                ready={qualityCheck.ready}
+                showSilhouette={scanStep === "guidance" && !poseLoading}
+              />
+
+              {/* Directional arrows — shown only during guidance when pose active */}
+              {scanStep === "guidance" && !poseLoading && !qualityCheck.ready && (
+                <>
+                  {(qualityCheck.bodyNotVisible || qualityCheck.tooClose) && (
+                    <ArrowCue direction="up" label="Step back" />
+                  )}
+                  {qualityCheck.tooFar && (
+                    <ArrowCue direction="down" label="Come closer" />
+                  )}
+                  {qualityCheck.tooLeft && (
+                    <ArrowCue direction="right" label="Move right" />
+                  )}
+                  {qualityCheck.tooRight && (
+                    <ArrowCue direction="left" label="Move left" />
+                  )}
+                </>
               )}
 
+              {/* Corner brackets */}
               {[
                 "top-3 left-3 border-t-2 border-l-2 rounded-tl-lg w-8 h-8",
                 "top-3 right-3 border-t-2 border-r-2 rounded-tr-lg w-8 h-8",
                 "bottom-3 left-3 border-b-2 border-l-2 rounded-bl-lg w-8 h-8",
                 "bottom-3 right-3 border-b-2 border-r-2 rounded-br-lg w-8 h-8",
               ].map((cls, i) => (
-                <div key={i} className={`absolute border-gold/60 ${cls}`} />
+                <div key={i} className={cn("absolute border-gold/60", cls)} />
               ))}
 
-              <div className="absolute bottom-4 left-4 right-4">
-                {scanStep === "guidance" && (
-                  <div className="bg-bg-base/70 rounded-xl px-4 py-2 text-center backdrop-blur-sm">
-                    <span className="text-sm font-sans text-gold/90 animate-pulse">
-                      Position yourself in the frame
-                    </span>
-                  </div>
-                )}
-                {scanStep === "scanning" && (
-                  <div className="bg-bg-base/80 rounded-xl px-4 py-2 text-center backdrop-blur-sm">
-                    <span className="text-sm font-sans text-gold">
-                      Capturing frame {capturedFrames} of {TOTAL_FRAMES}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
+              {/* Scanning sweep line */}
+              {scanStep === "scanning" && (
+                <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent animate-scan-line" />
+              )}
 
-            <div className="space-y-2">
-              {GUIDANCE_CHECKS.map((inst) => (
-                <div
-                  key={inst.id}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sans border bg-success/10 border-success/20 text-success"
-                >
-                  <Check size={14} />
-                  {inst.text}
+              {/* Ready indicator */}
+              {scanStep === "guidance" && qualityCheck.ready && (
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-success/15 border border-success/40 rounded-xl px-4 py-2 text-center backdrop-blur-sm">
+                    <span className="text-sm font-sans text-success font-medium">
+                      Great position — scanning in a moment…
+                    </span>
+                  </div>
                 </div>
-              ))}
+              )}
+
+              {/* Guidance hint when no pose detected yet */}
+              {scanStep === "guidance" && !poseLoading && !qualityCheck.ready && qualityCheck.bodyNotVisible && poseFailed && (
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-bg-base/75 rounded-xl px-4 py-2 text-center backdrop-blur-sm">
+                    <span className="text-xs font-sans text-muted">
+                      Align your body with the silhouette
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
+            {/* Setup hints — shown only in guidance before pose detected */}
+            {scanStep === "guidance" && qualityCheck.bodyNotVisible && (
+              <div className="space-y-1.5">
+                {SETUP_HINTS.map((hint) => (
+                  <div
+                    key={hint}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-sans border bg-bg-surface/60 border-border text-muted"
+                  >
+                    <Check size={12} className="text-gold flex-shrink-0" />
+                    {hint}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Frame capture progress */}
             {scanStep === "scanning" && (
               <div className="flex items-center justify-center gap-3">
                 {Array.from({ length: TOTAL_FRAMES }, (_, i) => i + 1).map((f) => (
@@ -293,7 +482,7 @@ export default function ScanPage() {
         </div>
       )}
 
-      {/* Analysing step */}
+      {/* Analysing */}
       {scanStep === "analysing" && (
         <div className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-sm w-full text-center space-y-6">
@@ -308,7 +497,7 @@ export default function ScanPage() {
         </div>
       )}
 
-      {/* Complete step */}
+      {/* Complete */}
       {scanStep === "complete" && (
         <div className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-sm w-full text-center space-y-6 animate-slide-up">
@@ -342,7 +531,7 @@ export default function ScanPage() {
         </div>
       )}
 
-      {/* Failed step */}
+      {/* Failed */}
       {scanStep === "failed" && (
         <div className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-sm w-full text-center space-y-6">
@@ -360,7 +549,12 @@ export default function ScanPage() {
                 <RefreshCw size={16} />
                 Try again
               </GoldButton>
-              <GoldButton variant="outline" size="sm" className="w-full justify-center" onClick={() => router.push("/intake")}>
+              <GoldButton
+                variant="outline"
+                size="sm"
+                className="w-full justify-center"
+                onClick={() => router.push("/intake")}
+              >
                 Choose different method
               </GoldButton>
             </div>
