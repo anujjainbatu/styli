@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, ShoppingBag, Users } from "lucide-react";
+import { Heart, ShoppingBag, Users, Plus, Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
 import ExplanationChip from "@/components/ui/ExplanationChip";
 import type { RecommendationItem } from "@/lib/mock-data";
+
+type WardrobeState = "idle" | "adding" | "added" | "error";
 
 interface RecommendationCardProps {
   item: RecommendationItem;
@@ -14,6 +16,34 @@ interface RecommendationCardProps {
 export default function RecommendationCard({ item }: RecommendationCardProps) {
   const [wishlisted, setWishlisted] = useState(item.inWishlist);
   const [wishlistItemId, setWishlistItemId] = useState<string | null>(null);
+  const [wardrobeState, setWardrobeState] = useState<WardrobeState>("idle");
+
+  const addToWardrobe = async () => {
+    if (wardrobeState !== "idle") return;
+    setWardrobeState("adding");
+    try {
+      const res = await fetch("/api/wardrobe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productName: item.productName,
+          brand: item.brand,
+          category: item.category,
+          primaryColor: item.primaryColor,
+          primaryColorHex: item.primaryColorHex,
+          price: item.price,
+          imageUrl: item.imageUrl,
+          productUrl: item.affiliateUrl,
+          source: "manual",
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setWardrobeState("added");
+    } catch {
+      setWardrobeState("error");
+      setTimeout(() => setWardrobeState("idle"), 2000);
+    }
+  };
 
   const toggleWishlist = async () => {
     const next = !wishlisted;
@@ -98,23 +128,60 @@ export default function RecommendationCard({ item }: RecommendationCardProps) {
           </p>
         </div>
 
-        {/* Explanation chips */}
-        <div className="flex flex-wrap gap-1.5">
-          {item.explanations.slice(0, 2).map((exp, i) => (
-            <ExplanationChip key={i} icon={exp.icon} text={exp.text} />
-          ))}
+        {/* Explanation chips — 1 visible + overflow count */}
+        <div className="flex items-center gap-1.5 min-h-[24px]">
+          {item.explanations[0] && (
+            <ExplanationChip
+              icon={item.explanations[0].icon}
+              text={item.explanations[0].text}
+              className="truncate max-w-[160px]"
+            />
+          )}
+          {item.explanations.length > 1 && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-sans bg-bg-elevated border border-border text-muted flex-shrink-0">
+              +{item.explanations.length - 1}
+            </span>
+          )}
         </div>
 
-        {/* Buy CTA */}
-        <a
-          href={item.affiliateUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-gold/10 border border-gold/25 text-gold text-sm font-sans font-medium hover:bg-gold/20 hover:border-gold/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-        >
-          <ShoppingBag size={14} />
-          Shop now
-        </a>
+        {/* Action buttons — stacked, clearly distinct roles */}
+        <div className="space-y-2">
+          <a
+            href={item.affiliateUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-gold/10 border border-gold/25 text-gold text-sm font-sans font-medium hover:bg-gold/20 hover:border-gold/50 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          >
+            <ShoppingBag size={14} />
+            Buy now
+          </a>
+
+          <button
+            onClick={addToWardrobe}
+            disabled={wardrobeState === "adding" || wardrobeState === "added"}
+            className={cn(
+              "flex items-center justify-center gap-2 w-full py-2 rounded-xl border text-xs font-sans font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
+              wardrobeState === "added"
+                ? "bg-success/10 border-success/30 text-success cursor-default"
+                : wardrobeState === "error"
+                ? "bg-red-500/10 border-red-500/25 text-red-400"
+                : "bg-bg-elevated border-border text-muted hover:border-gold/30 hover:text-cream"
+            )}
+          >
+            {wardrobeState === "adding" ? (
+              <Loader2 size={13} className="animate-spin" />
+            ) : wardrobeState === "added" ? (
+              <Check size={13} />
+            ) : (
+              <Plus size={13} />
+            )}
+            {wardrobeState === "added"
+              ? "In wardrobe"
+              : wardrobeState === "error"
+              ? "Failed — try again"
+              : "Add to wardrobe"}
+          </button>
+        </div>
       </div>
     </article>
   );
