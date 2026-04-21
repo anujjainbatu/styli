@@ -95,6 +95,8 @@ export default function ScanConfirmPage() {
           recommendedNecklines: necklines,
           colorPalette: season?.colors ?? [],
           avoidColors: [],
+          source: "camera",
+          consentGivenAt: new Date().toISOString(),
         }),
       });
       router.push("/recommendations");

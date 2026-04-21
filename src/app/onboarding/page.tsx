@@ -61,7 +61,7 @@ export default function OnboardingPage() {
           budgetMaxUsd: budgetRange.max,
         }),
       });
-      router.push("/scan");
+      router.push("/intake");
     } finally {
       setSaving(false);
     }

@@ -7,6 +7,8 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1, "NEXT_PUBLIC_SUPABASE_ANON_KEY is required"),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "SUPABASE_SERVICE_ROLE_KEY is required"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
+  // Optional — extraction falls back to empty profile if absent
+  ANTHROPIC_API_KEY: z.string().optional(),
 })
 
 const parsed = envSchema.safeParse(process.env)

@@ -26,8 +26,45 @@ export const ScanConfirmSchema = z.object({
   recommendedNecklines: z.array(z.string()).default([]),
   colorPalette: z.array(z.string()).default([]),
   avoidColors: z.array(z.string()).default([]),
+  source: z.enum(["camera", "upload", "instagram"]).default("camera"),
+  consentGivenAt: z.string().datetime().optional(),
 })
 export type ScanConfirmInput = z.infer<typeof ScanConfirmSchema>
+
+// ─── Extraction ──────────────────────────────────────────────────────────────
+
+export type ExtractionMethod = "vision_llm" | "manual"
+
+export type ExtractionResult = {
+  bodyShape: string | null
+  bodyShapeConfidence: number
+  faceShape: string | null
+  faceShapeConfidence: number
+  monkTone: number | null
+  skinUndertone: "warm" | "cool" | "neutral" | null
+  extractionMethod: ExtractionMethod
+  extractionConfidence: number
+  warnings: string[]
+}
+
+// ─── Instagram ───────────────────────────────────────────────────────────────
+
+export type InstagramMediaType = "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM"
+
+export type InstagramMedia = {
+  id: string
+  mediaType: InstagramMediaType
+  mediaUrl: string
+  thumbnailUrl?: string
+  timestamp: string
+}
+
+export type InstagramMediaResponse = {
+  media: InstagramMedia[]
+  accountType: string
+}
+
+export type InstagramErrorCode = "personal_account" | "token_invalid" | "token_expired" | "api_error"
 
 // ─── Wardrobe ────────────────────────────────────────────────────────────────
 

@@ -24,5 +24,9 @@ export function apiError(error: unknown): NextResponse {
     return NextResponse.json({ error: error.message, code: error.code }, { status: error.status })
   }
   console.error("[API Error]", error)
-  return NextResponse.json({ error: "Internal server error", code: "INTERNAL_ERROR" }, { status: 500 })
+  const detail =
+    process.env.NODE_ENV === "development" && error instanceof Error
+      ? error.message
+      : "Internal server error"
+  return NextResponse.json({ error: detail, code: "INTERNAL_ERROR" }, { status: 500 })
 }

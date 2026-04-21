@@ -17,11 +17,13 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  preferences   StylePreferences?
-  bodyProfile   BodyProfile?
-  wardrobeItems WardrobeItem[]
-  wishlistItems WishlistItem[]
-  outfits       Outfit[]
+  preferences      StylePreferences?
+  bodyProfile      BodyProfile?
+  wardrobeItems    WardrobeItem[]
+  wishlistItems    WishlistItem[]
+  outfits          Outfit[]
+  instagramToken   InstagramToken?
+  scanRetentions   ScanRetention[]
 }
 
 model StylePreferences {
@@ -49,6 +51,11 @@ model BodyProfile {
   skinUndertone          String?
   colorSeason            String?
   skinToneConfirmed      Boolean  @default(false)
+  source                 String   @default("camera")
+  consentGivenAt         DateTime?
+  extractionMethod       String?
+  extractionConfidence   Float?
+  extractionWarnings     String[]
   recommendedSilhouettes String[]
   recommendedNecklines   String[]
   colorPalette           String[]
@@ -141,4 +148,30 @@ model OutfitItem {
   wardrobeItem   WardrobeItem @relation(fields: [wardrobeItemId], references: [id], onDelete: Cascade)
 
   @@id([outfitId, slot])
+}
+
+model ScanRetention {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storagePaths String[]
+  source       String
+  purgeBefore  DateTime
+  purgedAt     DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([purgeBefore])
+}
+
+model InstagramToken {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken String
+  tokenType   String    @default("bearer")
+  scope       String    @default("user_profile,user_media")
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
