@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import type { RecommendationQuery, RecommendationResponse } from "@/types/api"
 import type { RecommendationItem } from "@/lib/mock-data"
-import { CATALOG } from "@/lib/catalog"
+import { getCatalog } from "@/lib/catalog"
 
 // ─── Gender filter ────────────────────────────────────────────────────────────
 
@@ -143,7 +143,7 @@ export async function getRecommendations(
   ])
   const wishlistIds = new Set(wishlist.map((w) => w.externalId).filter(Boolean))
   const userGender = prefs?.genderIdentity ?? null
-  const genderPool = CATALOG.filter((i) => genderAllowed(i, userGender))
+  const genderPool = getCatalog().filter((i) => genderAllowed(i, userGender))
 
   if (query.intent && process.env.ENABLE_INTENT_RECS !== "false") {
     const keywords = extractKeywords(query.intent)

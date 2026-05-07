@@ -19,7 +19,8 @@ const args = process.argv.slice(2);
 const APPEND_MODE = args.includes("--append");
 const INPUTS = args.filter((a) => !a.startsWith("--"));
 const OUTPUT_JSON = path.join(process.cwd(), "src/lib/catalog-data.json");
-const MAX_ROWS = 5000;
+const MAX_ROWS = Infinity;      // no total cap
+const PER_SOURCE_CAP = 15000;  // max items to take from any single file
 
 if (!INPUTS.length) {
   console.error(
@@ -271,6 +272,37 @@ function rowToMyntra(row: Record<string, string>): CatalogItem | null {
   };
 }
 
+// Mens product format: SERIAL NO, NAME, CATEGORY, DESCRIPTION & COLOR, FABRIC, IMAGE, SIZE, PRICE, PRODUCT ID, WEBSITE, PRODUCT URL
+function rowToMens(row: Record<string, string>): CatalogItem | null {
+  const name = pick(row, "name");
+  const url = pick(row, "product url");
+  if (!name || !url) return null;
+
+  const rawId = pick(row, "product id");
+  const category = mapCategory(pick(row, "category") || name);
+  if (!ALLOWED_CATEGORIES.has(category)) return null;
+
+  // extract color from name (e.g. "Men Grey Printed T-shirt" → "grey")
+  const colour = Object.keys(COLOR_HEX).find((c) => name.toLowerCase().includes(c)) ?? "";
+
+  return {
+    id: rawId ? `mens_${rawId}` : `mens_${name.slice(0, 20).replace(/\s+/g, "_")}`,
+    productName: name,
+    brand: name.split(" ")[0] || "Unknown", // brand is usually first word in Myntra product names
+    price: parsePrice(pick(row, "price")),
+    imageUrl: pick(row, "image"),
+    category,
+    gender: "men" as const,
+    matchScore: 0.75,
+    explanations: [],
+    pairsWithCount: 0,
+    inWishlist: false,
+    affiliateUrl: url,
+    primaryColor: colour,
+    primaryColorHex: colour ? COLOR_HEX[colour] : "#808080",
+  };
+}
+
 // --- Main ---
 async function main() {
   const existing: CatalogItem[] = APPEND_MODE && fs.existsSync(OUTPUT_JSON)
@@ -278,12 +310,9 @@ async function main() {
     : [];
 
   const existingIds = new Set(existing.map((i) => i.id));
-  const slots = MAX_ROWS - existing.length;
-
-  if (APPEND_MODE) console.log(`Append mode — ${existing.length} existing, room for ${slots} more`);
+  if (APPEND_MODE) console.log(`Append mode — ${existing.length} existing (no total cap, ${PER_SOURCE_CAP} max per file)`);
 
   const newItems: CatalogItem[] = [];
-  const perSource = Math.ceil(slots / INPUTS.length);
 
   for (const csvPath of INPUTS) {
     if (!fs.existsSync(csvPath)) { console.error(`Not found: ${csvPath}`); continue; }
@@ -293,18 +322,21 @@ async function main() {
     let detectedFormat = "";
 
     const total = await readCSVStream(csvPath, (row, rowIdx) => {
-      if (sourceItems.length >= perSource) return false; // stop reading
+      if (sourceItems.length >= PER_SOURCE_CAP) return false; // stop reading
 
       // Detect format on first row
       if (detectedFormat === "") {
         const keys = Object.keys(row);
         detectedFormat = keys.includes("p_id") ? "myntra-pid"
           : keys.includes("purl") ? "myntra-purl"
+          : keys.includes("product url") ? "myntra-mens"
           : "amazon";
       }
 
       const item = detectedFormat === "myntra-pid"
         ? rowToMyntra(row)
+        : detectedFormat === "myntra-mens"
+        ? rowToMens(row)
         : rowToAmazon(row, rowIdx);
 
       if (!item || existingIds.has(item.id)) return true;
@@ -314,12 +346,12 @@ async function main() {
     });
 
     console.log(`  Scanned ~${total} rows → kept ${sourceItems.length} items (${detectedFormat})`);
-    newItems.push(...sourceItems);
+    for (const item of sourceItems) newItems.push(item);
   }
 
-  const final = [...existing, ...newItems].slice(0, MAX_ROWS);
+  const final = existing.concat(newItems);
   console.log(`Writing ${final.length} total items → ${OUTPUT_JSON}`);
-  fs.writeFileSync(OUTPUT_JSON, JSON.stringify(final, null, 2));
+  fs.writeFileSync(OUTPUT_JSON, JSON.stringify(final));
   console.log("Done. Restart the dev server to pick up the new catalog.");
 }
 

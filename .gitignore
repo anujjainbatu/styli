@@ -41,3 +41,7 @@ next-env.d.ts
 
 # prisma generated client
 /src/generated/prisma
+
+# generated catalog (large, rebuilt locally via npm run catalog:build)
+/src/lib/catalog-data.json
+/mens-product
